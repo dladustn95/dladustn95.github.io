@@ -1,6 +1,6 @@
 ---
 title: "축구"
-permalink: /categories/축구/
+permalink: /categories/football/
 layout: category
 author_profile: true
 taxonomy: 축구

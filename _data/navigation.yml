@@ -7,9 +7,9 @@ main:
   - title: "Tags"
     url: /tags/
   - title: "자연어 처리"
-    url: /NLP/
+    url: /categories/NLP/
   - title: "축구"
-    url: /football/
+    url: /categories/football/
   # - title: "Sample Collections"
   #   url: /collection-archive/
   # - title: "Sitemap"
