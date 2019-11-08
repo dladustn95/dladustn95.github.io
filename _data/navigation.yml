@@ -1,7 +1,11 @@
 # main links
 main:
   - title: "About"
-    url: https://mmistakes.github.io/minimal-mistakes/about/
+    url: /about/
+  - title: "Categories"
+    url: /categories/
+  - title: "Tags"
+      url: /tags/
   - title: "자연어 처리"
     url: /NLP/
   - title: "축구"
