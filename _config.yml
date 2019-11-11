@@ -25,7 +25,7 @@ url                      : "https://dladustn95.github.io"
 baseurl                  : # the subpath of your site, e.g. "/blog"
 repository               : "dladustn95/dladustn95.github.io"
 teaser                   : "/assets/images/fachry-zella-devandra-Yta-zdP9PVM-unsplash_.jpg"
-logo                     : "/assets/images/kelly-sikkema-56w-xo2ZZM4-unsplash_forlogo.jpg"
+logo                     : #"/assets/images/kelly-sikkema-56w-xo2ZZM4-unsplash_forlogo.jpg"
 masthead_title           : # overrides the website title displayed in the masthead, use " " for no title
 # breadcrumbs            : false # true, false (default)
 words_per_minute         : 200

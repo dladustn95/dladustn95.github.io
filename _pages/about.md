@@ -1,10 +1,10 @@
 ---
-title: "이 블로그 설명서"
+title: "About"
 permalink: /about/
 layout: single
 ---
 
-## dladustn95.github.io 블로그
+## 임연수의 블로그
 
 이 블로그는 내 블로그이다.
 
