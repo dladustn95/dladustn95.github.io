@@ -7,7 +7,8 @@ categories:
   - NLP
 tags:
   - [NLP, RelationPrediction, LinkPrediction, ConvE]
-last_modified_at: 2019-11-11T11:11:00+09:00
+date: 2019-11-11T11:11:00+09:00
+last_modified_at: 2019-11-14T14:08:00+09:00
 ---
 
 ## 서론
@@ -79,12 +80,10 @@ scoring component에서는 두 개체 embedding이 $$\psi_r$$ 함수에 의해 �
 이 모델은 입력 개체와 관계 사이의 상호작용을 알아낸다. 
 2D embedding을 convolution 연산하여 score를 정의하는 것이 이 모델의 특징이다.
 이 모델의 구조는 아래 그림과 같다.    
+
 | ![그림1](/assets/images/convE_figure1.png "그림1"){: .align-center} |
 |:---:|
-| 그림1: 개체와 관계 embedding이 reshape, concatenate 된다.(step1,2); 
-그 행렬이 convolution layer에 입력으로 들어간다.(step3); 
-결과로 나온 feature map tensor는 k-차원 공간으로 vectorised, projected 된다.(step4); 
-목적어 embedding의 후보들과 match된다.(step5) |
+| 그림1: 개체와 관계 embedding이 reshape, concatenate 된다.(step1,2); 그 행렬이 convolution layer에 입력으로 들어간다.(step3); 결과로 나온 feature map tensor는 k-차원 공간으로 vectorised, projected 된다.(step4); 목적어 embedding의 후보들과 match된다.(step5) |
   
 scoring function은 다음과 같이 정의된다.  
 $$\psi_r\left(e_s,e_o\right)\ =f(vec(f([\overline{e_s};\overline{r_r}]\ast \omega))W)e_o$$  
@@ -132,8 +131,9 @@ training set의 트리플을 반전시킴으로써 간단히 많은 양의 test 
 ### Experimental Setup
 &nbsp;&nbsp;Validation set의 MRR에 대한 grid search를 통해 ConvE의 hyperparameter를 선택하였다. 
 Grid search에 사용된 Hyperparameter의 범위는 다음과 같다.  
+
 | Hyperparameter | Range |
-|:---:|:---:|
+|:----:|:----:|
 | embedding dropout | 0.0, 0.1, 0.2 |
 | feature map dropout | 0.0, 0.1, 0.2, 0.3 |
 | projection layer dropout | 0.0, 0.1, 0.3, 0.5 |
@@ -141,6 +141,7 @@ Grid search에 사용된 Hyperparameter의 범위는 다음과 같다.
 | batch size | 64, 128, 256 |
 | learning rate | 0.001, 0.003 |
 | label smoothing | 0.0, 0.1, 0.2, 0.3 |
+
 &nbsp;&nbsp;Hyperparameter에 대한 grid search외에도 2D Convolution layer를 fully connected layer 또는 1D convolution으로 대체하는 실험도 진행하였다. 
 그러나 이러한 실험 결과는 좋지 않았다. 
 또한 필터의 크기를 달리한 실험도 진행하였다. 
@@ -170,4 +171,58 @@ YAGO3-10과 Countries에 대한 결과는 다음과 같다.
 &nbsp;&nbsp;inverse model은 FB15k와 WN18의 많은 측정 항목에서 state-of-the-art 성능을 가졌다. 
 그러나 YAGO3-10과 FB15k-237 dataset에서는 역관계를 추출하지 못하였다. 
 FB15k-237을 만드는 과정에서 'similar to'와 같은 대칭적인 관계는 제거하지 않았다. 
-이러한 관계가 존재한다는 점은 동일한 과정을 거쳐 만들어진 WN18RR에서 inverse model이 좋은 점수를 가지는 이유가 된다. 
+이러한 관계가 존재한다는 점은 동일한 과정을 거쳐 만들어진 WN18RR에서 inverse model이 좋은 점수를 가지는 이유가 된다.    
+
+### Parameter efficiency of ConvE
+&nbsp;&nbsp;ConvE는 FB15k-237에서 0.23M개의 parameter로 1.89M개의 parameter를 쓰는 DistMult보다 좋은 성능을 보였다. 
+ConvE는 0.46M개의 parameter로 FB15k-237의 Hits@10에서 0.425로 state-of-the-art를 달성했다. 
+이전의 가장 좋은 모델 R-GCN은 동일 항목에서 8M개의 parameter로 0.417을 기록하였다. 
+ConvE는 R-GCN 보다 17배, DistMult보다 8배 좋은 parameter 효율을 보인다. 
+Freebase 전체에서 모델의 크기는 R-GCN의 경우 82GB, DistMult의 경우 21GB로 ConvE의 5.2GB보다 크다.    
+
+## 분석
+### Ablation Study
+![그림4](/assets/images/convE_figure4.png "그림4"){: .align-center}    
+&nbsp;&nbsp;위 그림은 ablation study의 결과를 나타낸다. 
+Hidden dropout이 가장 중요한 요소란 것을 알 수 있다. 
+1-N scoring도 성능 향상에 영향을 준다. 
+Label smoothing은 성능에 큰 영향을 주지 않는다.    
+
+### Analysis of Indegree and PageRank
+&nbsp;&nbsp;ConvE는 WN18RR보다 YAGO3-10, FB15k-237에서 더 좋은 성능을 보인다. 
+이에 대해 논문에서는 두 dataset의 node가 WN18RR에 비해 굉장히 높은 relation-specific indegree를 갖기 때문이라고 주장했다. 
+예를 들어 head node "US"는 edge "was born in"에서 10,000개 이상의 진입차수를 갖는다. 
+"US"로 향하는 tail node들은 배우, 작가, 학자, 사업가 등으로 아주 다양하다. 
+진입차수를 많이 갖는 head node를 성공적으로 모델링하기 위해서는 연결되는 tail node의 다양한 특징을 성공적으로 포착할 수 있어야 한다. 
+이 논문은 여러 layer의 feature를 학습하는 깊은(deep) 모델(ConvE)일수록 얕은 모델(DistMult)보다 이러한 특징을 포착하는데 유리하다고 주장한다.  
+&nbsp;&nbsp;그러나 깊은 모델일수록 최적화가 어렵다. 
+이에 대해 논문은 WN18이나 WN18RR 같은 낮은 relation-specific indegree를 갖는 dataset에서는 DistMult 같은 얕은 모델이 더 정확할 수 있다고 주장했다.  
+&nbsp;&nbsp;두 주장이 옳음을 실험하기 위해 relation-specific indegree이 높은 FB15k, 낮은 WN18을 사용했다. 
+또한 각각의 dataset에서 높거나 낮은 indgree node를 삭제하여 relation-specific indegree가 낮은 low-FB15k, 높은 high-WN18 dataset을 만들었다. 
+실험에 DistMult와 ConvE 모델을 사용했다. 
+논문의 가설이 맞다면 높은 relation-specific indegree를 갖는 dataset에서 ConvE는 DistMult보다 항상 좋은 결과를 가질 것이다.  
+&nbsp;&nbsp;실험의 평가 항목으로 hits@10을 사용했다.
+
+| dataset | ConvE | DistMult |
+|:----:|:----:|:----:|
+| FB15k | 0.831 | 0.824 |
+| high-WN18 | 0.952 | 0.938 |
+| low-FB15k | 0.586 | 0.728 |
+| WN18 | 0.956 | 0.936 |
+
+실험 결과 깊은 모델은 복잡한 그래프에서 좋은 성능을 보이고, 얕은 모델은 간단한 그래프에서 좋은 성능을 보였다.  
+&nbsp;&nbsp;이를 자세히 조사하기 위해 node의 중심성을 측정하는 PageRank를 사용했다. 
+PageRank는 node의 recursive indegree를 측정한다. 
+node의 PageRank값은 node, node의 이웃, node의 이웃의 이웃의 indegree 등, network의 다른 모든 node에 비례한다. 
+이러한 이유로 ConvE는 PageRank의 평균이 높은 dataset에서 좋은 성능을 보일 것이다.  
+&nbsp;&nbsp;이를 증명하기 위해 각각의 dataset에 대한 PageRank를 측정하였다.  
+![그림5](/assets/images/convE_figure5.png "그림5"){: .align-center}    
+위 그림은 test set에 포함된 node의 PageRank 평균과 Hits@10에 대한 DistMult와 ConvE의 성능 차이를 나타낸다. 
+이러한 증거들로 깊은 모델이 relation-specific indegree가 높은 dataset에 대해 유리하다는 것을 증명할 수 있다.    
+
+## 결론 및 향후 연구
+&nbsp;&nbsp;ConvE는 link prediction에서 2D convolution을 사용한 최초의 모델이다. 
+기존 모델에 비해 적은 parameter를 사용해 좋은 성능을 보였고, 1-N scoring을 통해 속도를 향상시켰다. 
+WN18과 FB15k에서 역관계 문제를 지적하였고, 이를 해결한 dataset을 소개하였다.  
+&nbsp;&nbsp;ConvE는 컴퓨터 비전에 사용되는 다른 구조와 비교하였을때 얕은 편이다. 추후에는 convolution 모델을 더 깊게 만들려 한다. 
+또한 embedding 공간에 대규모 구조를 적용해 embedding 간 상호 작용의 횟수를 늘리려 한다.
