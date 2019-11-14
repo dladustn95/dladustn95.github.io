@@ -111,7 +111,7 @@ Adam optimiser를 사용했고, label smoothing을 사용했다.
 따라서 전체 연산 시간을 줄이려면 convolution 연산의 수를 줄이는 것이 중요하다. 
 link prediction 모델에서는 평가 속도를 높이기 위해 주로 batch size를 증가시킨다. 
 그러나 convolution 모델에서는 batch size를 늘리는데 필요한 메모리량이 GPU의 메모리 용량을 빠르게 넘어가기 때문에 적합하지 않다.  
-&nbsp;&nbsp;ConvE는 다른 link prediction 모델과 같이 트리플$$(s,r,o)$$로 1-1 scoring을 하는 대신, 하나의 $$(s,r)$$쌍으로 모든 개체$$o\in \mathal{E}$$에 대해 1-N scoring을 시행한다.
+&nbsp;&nbsp;ConvE는 다른 link prediction 모델과 같이 트리플$$(s,r,o)$$로 1-1 scoring을 하는 대신, 하나의 $$(s,r)$$쌍으로 모든 개체$$o\in \mathcal{E}$$에 대해 1-N scoring을 시행한다.
 convolution 모델의 평가에서 1-1 scoring과 1-N scoring은 약 300배의 시간 차이가 난다.    
 
 ## 실험
