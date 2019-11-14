@@ -10,11 +10,12 @@ tags:
 date: 2019-11-11T11:11:00+09:00
 last_modified_at: 2019-11-14T14:08:00+09:00
 ---
+
 # Convolutional 2D Knowledge Graph Embeddings
-+ [ConvE 논문](https://arxiv.org/pdf/1707.01476.pdf)의 해석 및 정리입니다.
++ [ConvE 논문](https://arxiv.org/abs/1707.01476)의 해석 및 정리입니다.
 + relation prediction, link prediction, knowledge graph completion 등으로 불리는 task를 공부하며 읽은 첫 논문입니다.
 
-## 서론
+## Introduction
 &nbsp;&nbsp;지식그래프(Knowledge graphs)는 지식베이스(Knowledge bases)에서 관계(relation)를 edge로 개체(entity)를 node로 바꾸어 만든 것이다. 
 지식그래프는 search, analytics, recommendation, data integration에서 중요한 자원이다. 
 그러나 그래프의 link가 누락되어 있는 불완전성으로 인해 사용에 어려움이 있다. 
@@ -42,7 +43,7 @@ ConvE는 단일 convolution layer, embedding dimension에 대한 projection laye
 + 주로 사용되는 link prediction dataset의 inverse relation으로 인한 평가의 어려움을 조사하였고 inverse relation을 제거한 버전의 dataset을 소개하여 간단한 규칙 기반 모델로 해결할 수 없도록 함.
 + ConvE와 이전에 제안된 모델을 위에서 소개한 dataset으로 평가한 결과 MRR에서 state-of-the-art를 달성    
 
-## 관련 연구
+## Related Work
 &nbsp;&nbsp;여러 link prediction 모델이 제안되었다. Translating Embedding 모델(TransE), Bilinear Diagonal 모델(DistMult)등. 
 본 논문의 모델과 가장 유사한 모델은 Holographic Embedding 모델(HolE)이다. HolE는 cross-correlation을 사용한다. 
 그러나 HolE는 비선형 feature의 여러 layer를 학습하지 않아서 이론적으로 ConvE보다 표현력이 떨어진다.
@@ -117,7 +118,7 @@ link prediction 모델에서는 평가 속도를 높이기 위해 주로 batch s
 &nbsp;&nbsp;ConvE는 다른 link prediction 모델과 같이 트리플$$(s,r,o)$$로 1-1 scoring을 하는 대신, 하나의 $$(s,r)$$쌍으로 모든 개체$$o\in \mathcal{E}$$에 대해 1-N scoring을 시행한다.
 convolution 모델의 평가에서 1-1 scoring과 1-N scoring은 약 300배의 시간 차이가 난다.    
 
-## 실험
+## Experiments
 ### Knowledge Graph Datasets
 &nbsp;&nbsp;ConvE의 평가를 위해 다음과 같은 dataset을 사용했다.
 +WN18 : 18개의 관계와 40,943개의 개체로 이뤄진 WordNet의 부분 집합, 151,442개의 트리플 대부분은 상위어와 하위어로 구성되어 있어 계층적인 구조이다.
@@ -159,7 +160,7 @@ link prediction 모델이 어떠한 관계가 다른 것과 역관계인지 알�
 &nbsp;&nbsp;실험에서 test 트리플의 역관계 트리플이 test set 바깥에서 확인되면 매치된 k개에 대한 상위 k개의 순위 순열을 샘플링한다. 
 발견되지 않으면 랜덤으로 test 트리플에 대한 순위를 선택한다.    
 
-## 결과
+## Results
 &nbsp;&nbsp;이전의 연구들과 같이 *filtered setting*을 사용하여 실험을 진행하였다. 
 link prediction의 평가는 test set에 속한 트리플의 한 개체를 지우고 빈 자리에 가능한 모든 후보 개체를 대입하여 그 중 정답의 순위를 매기는 방식이다. 
 이 방식의 문제는 복수의 정답이 생길 가능성이 있다는 것이다. 
@@ -183,7 +184,7 @@ ConvE는 0.46M개의 parameter로 FB15k-237의 Hits@10에서 0.425로 state-of-t
 ConvE는 R-GCN 보다 17배, DistMult보다 8배 좋은 parameter 효율을 보인다. 
 Freebase 전체에서 모델의 크기는 R-GCN의 경우 82GB, DistMult의 경우 21GB로 ConvE의 5.2GB보다 크다.    
 
-## 분석
+## Analysis
 ### Ablation Study
 ![그림4](/assets/images/convE_figure4.png "그림4"){: .align-center}    
 &nbsp;&nbsp;위 그림은 ablation study의 결과를 나타낸다. 
@@ -223,7 +224,7 @@ node의 PageRank값은 node, node의 이웃, node의 이웃의 이웃의 indegre
 위 그림은 test set에 포함된 node의 PageRank 평균과 Hits@10에 대한 DistMult와 ConvE의 성능 차이를 나타낸다. 
 이러한 증거들로 깊은 모델이 relation-specific indegree가 높은 dataset에 대해 유리하다는 것을 증명할 수 있다.    
 
-## 결론 및 향후 연구
+## Conclusion and Future Work
 &nbsp;&nbsp;ConvE는 link prediction에서 2D convolution을 사용한 최초의 모델이다. 
 기존 모델에 비해 적은 parameter를 사용해 좋은 성능을 보였고, 1-N scoring을 통해 속도를 향상시켰다. 
 WN18과 FB15k에서 역관계 문제를 지적하였고, 이를 해결한 dataset을 소개하였다.  
