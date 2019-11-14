@@ -10,6 +10,9 @@ tags:
 date: 2019-11-11T11:11:00+09:00
 last_modified_at: 2019-11-14T14:08:00+09:00
 ---
+# Convolutional 2D Knowledge Graph Embeddings
++ [ConvE 논문](https://arxiv.org/pdf/1707.01476.pdf)의 해석 및 정리입니다.
++ relation prediction, link prediction, knowledge graph completion 등으로 불리는 task를 공부하며 읽은 첫 논문입니다.
 
 ## 서론
 &nbsp;&nbsp;지식그래프(Knowledge graphs)는 지식베이스(Knowledge bases)에서 관계(relation)를 edge로 개체(entity)를 node로 바꾸어 만든 것이다. 
