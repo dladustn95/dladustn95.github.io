@@ -8,7 +8,7 @@ categories:
 tags:
   - [NLP, RelationPrediction, LinkPrediction, ConvR]
 date: 2019-11-14T14:24:00+09:00
-last_modified_at: 2019-11-14T14:24:00+09:00
+last_modified_at: 2019-11-15T17:34:00+09:00
 ---
 
 # Adaptive Convolution for Multi-Relational Learning
@@ -47,7 +47,7 @@ adaptive convolution 아이디어는 2D convolution에 국한되지 않고, 1D �
 
 ## Adaptive Convolution on Multi-relational Data
 ### The ConvR model
-&nbsp;&nbsp;주어진 트리플 $$(s,r,o)$$에 대해 ConvR은 두 개체 $$s,o$$를 벡터 $$\text{s,o}\in \mathcal(R)^{d_e}$$, 관계 $$r$$을 벡터 $$\text{r} \in \mathcal(R)^{d_r}로 변환했다. 
+&nbsp;&nbsp;주어진 트리플 $$(s,r,o)$$에 대해 ConvR은 두 개체 $$s,o$$를 벡터 $$\text{s,o}\in \mathcal(R)^{d_e}$$, 관계 $$r$$을 벡터 $$\text{r} \in \mathcal(R)^{d_r}$$로 변환했다. 
 여기서 $$d_e,d_r$$은 개체와 관계의 embedding size이다. 
 주어 개체 벡터는 2D 행렬 $$\text{S}\in \Bbb R^{d_e^h \times d_e^w}$$($$d_e = d_e^hd_e^w$$)로 변환되고 convolution layer의 입력으로 주어진다. 
 ConvE 논문에서 보인 것처럼 2D convolution이 1D보다 더 많은 feature를 추출할 수 있어 모델의 표현력을 높인다. 
