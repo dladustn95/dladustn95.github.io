@@ -1,6 +1,6 @@
 ---
-title:  "Adaptive Convolution for Multi-Relational Learning 논문 리뷰"
-excerpt: "Adaptive Convolution for Multi-Relational Learning 논문 리뷰"
+title:  "Learning Attention-based Embeddings for Relation Prediction in Knowledge Graphs 논문 리뷰"
+excerpt: "Learning Attention-based Embeddings for Relation Prediction in Knowledge Graphsg 논문 리뷰"
 
 mathjax: true
 categories:
@@ -12,7 +12,9 @@ last_modified_at: 2019-11-19T17:18:00+09:00
 ---
 
 # Learning Attention-based Embeddings for Relation Prediction in Knowledge Graphs
-+ KBAT는 지식 그래프에 attention embedding을 적용한 모델이다. 
++ [KBAT 논문](https://arxiv.org/abs/1906.01195)에 대한 해석 및 정리입니다. 
++ 현재 relation prediction (knoledge graph completion)에서 가장 좋은 성능을 보이는 모델입니다. 
++ KBAT는 지식 그래프에 attention embedding을 적용한 모델입니다. 
 
 ## Introduction
 &nbsp;&nbsp;Relation prediction(knowledge base completion)에서 state-of-the-art 모델은 대부분 *knoledge embedding* 기반 모델이다. 
