@@ -53,7 +53,7 @@ adaptive convolution 아이디어는 2D convolution에 국한되지 않고, 1D �
 ConvE 논문에서 보인 것처럼 2D convolution이 1D보다 더 많은 feature를 추출할 수 있어 모델의 표현력을 높인다. 
 관계 벡터 $$\text{r}$$은 모두 같은 크기로 나뉜다($$\text{r}^{(1)},\dotsb,\text{r}^{(c)}$$). 
 각각의 벡터 $$\text{r}^{(l)}\in \Bbb R^{d_r/c}$$는 2D convolution의 필터로 변환된다($$\text{R}^{(l)}\in \Bbb R^{h \times w}$$). 
-여기서 c는 filter의 크기, h,w는 각 필터의 가로와 세로이고 $$d_r=chw$$이다. 
+여기서 $$c$$는 filter의 크기, $$h,w$$는 각 필터의 가로와 세로이고 $$d_r=chw$$이다. 
 위 그림 1(b)에서는 길이가 9인 주어 개체 벡터가 3x3행렬로 변환되고, 길이가 8인 관계 벡터가 두개의 2x2 필터로 변환된다.  
 ![그림2](/assets/images/ConvR_figure2.png "그림2"){: .align-center}
 &nbsp;&nbsp;ConvR은 입력 $$\text{S}$$에 관계로 이뤄진 필터를 사용해 convolution 연산을 실행한다. 
@@ -82,7 +82,7 @@ ConvE는 개체와 관계의 concatenation line에서만 이러한 상호작용�
 반대로 ConvR은 개체와 관계의 다양한 지역에서 상호작용을 얻고, 모든 convolutional feature가 상호작용을 가진다.  
 &nbsp;&nbsp;ConvR은 parameter 측면에서도 효율적이다. 
 ConvE는 $$\mathcal{O}(d|\mathcal{E}|+d|\mathcal{R}|+chw+cd(2d^h-h+1)(d^w-w+1))$$의 공간 복잡도를 가진다. 
-여기서 chw는 $$h\timesw$$를 크기를 갖는 $$c$$개의 global filter이고, $$d=d^hd^w$$, $$cd(2d^h-h+1)(d^w-w+1)$$는 fully connected layer의 매개변수이다. 
+여기서 $$chw$$는 $$h\times w$$를 크기를 갖는 $$c$$개의 global filter이고, $$d=d^hd^w$$, $$cd(2d^h-h+1)(d^w-w+1)$$는 fully connected layer의 매개변수이다. 
 개체와 관계는 같은 크기 d를 가진다. 
 ConvR은 $$\mathcal{O}(d|\mathcal{E}|+d|\mathcal{R}|+cd_e(d_e^h-h+1)(d_e^w-w+1))$$의 공간 복잡도를 가진다. 
 ConvR은 global filter가 필요없다. 
