@@ -104,7 +104,7 @@ ConvR은 global filter가 필요없다.
 | WN18RR | 11 | 40,943 | 86,835 | 3,034 | 3,134 |
   
 #### Evaluation protocol
-&nbsp;&nbsp;각각의 트리플$$(s,r,o)에서 주어 개체의 자리에 모든 개체$$e\in\mathcla{E}$$를 넣어 각각의 트리플 $$(e,r,o)$$의 점수를 구한다. 
+&nbsp;&nbsp;각각의 트리플$$(s,r,o)$$에서 주어 개체의 자리에 모든 개체$$e\in\mathcla{E}$$를 넣어 각각의 트리플 $$(e,r,o)$$의 점수를 구한다. 
 점수 순으로 정렬한 뒤 참 트리플 $$(s,r,o)$$의 순위를 구한다. 
 평가에 *filtered setting* 을 사용한다. 
 *filtered setting*에 관한 설명은 [ConvE 논문 리뷰](https://dladustn95.github.io/nlp/ConvE_paper_review/#results)에서 설명하였기 때문에 생략한다. 

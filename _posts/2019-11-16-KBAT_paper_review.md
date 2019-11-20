@@ -107,3 +107,19 @@ $$\overrightarrow{h_i^\prime}=\sigma\left(\sum_{j\in\mathcal{N}_i} \sum_{k\in\ma
 multi-head attnetion은 학습 과정을 안정화하고, 이웃으로부터 더 많은 정보를 캡슐화한다. 
 M개의 독립된 attention mechanism은 embedding을 계산하고 concatenate한다.  
 $$\overrightarrow{h_i^\prime}=\|^M_{m=1}\sigma\left(\sum_{j\in\mathcal{N}_i}  \alpha_{ijk}^m c_{ijk}^m)\right)$$
+  
+| ![그림3](/assets/images/KBAT_figure3.png "그림3"){: .align-center} |
+|:---:|
+| 그림3: 점선은 concatenate 연산을 나타낸다. 초록원은 관계 embedding 벡터, 노란원은 개체 embedding 벡터를 나타낸다. |
+그림 3은 *graph attention layer*를 보여준다. 
+graph attention layer 1을 거친 후 관계 embedding에 선형 변환을 하여 추가해준다. 
+final attentional layer에서 multiple head에서 나온 embedding을 concatenate 하는 대신 평균을 적용해 최종 embedding vector를 얻는다.  
+$$\overrightarrow{h_i^\prime}=\sigma\left(\frac{1}{M}\sum_{m=1}^M\sum_{j\in\mathcal{N}_i} \sum_{k\in\mathcal{R}_{ij}} \alpha_{ijk}^m c_{ijk}^m\right)$$  
+그러나 embedding을 학습하는 과정에서 개체는 처음에 갖고 있던 embedding 정보를 잃는다. 
+이를 해결하기 위해 초기 embedding 벡터에 최종 개체 embedding의 dimension 크기만큼 선형 변환을 한 후, 그 값을 최종 embedding vector에 더해준다. 
+논문의 구조는 두 개체 사이의 n-hop 이웃에 대한 auxiliary relation을 도입하여 edge의 개념을 *directed path*로 확장한다. 
+auxiliary relation의 embedding은 경로에 있는 모든 관계 embedding의 합이다. 
+이 모델은 반복적으로 개체의 먼 이웃으로부터 지식을 모은다.  
+![그림4](/assets/images/KBAT_figure4.png "그림4"){: .align-center}
+그림 4에서 나타나듯이 모델의 첫번째 layer에서 모든 개체는 *직접 유입되는 이웃*으로 부터 정보를 얻는다. 
+두번째 layer에서 U.S는 
