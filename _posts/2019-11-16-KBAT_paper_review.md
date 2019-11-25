@@ -122,4 +122,49 @@ auxiliary relation의 embedding은 경로에 있는 모든 관계 embedding의 �
 이 모델은 반복적으로 개체의 먼 이웃으로부터 지식을 모은다.  
 ![그림4](/assets/images/KBAT_figure4.png "그림4"){: .align-center}
 그림 4에서 나타나듯이 모델의 첫번째 layer에서 모든 개체는 *직접 유입되는 이웃*으로 부터 정보를 얻는다. 
-두번째 layer에서 U.S는 
+두번째 layer에서 'U.S'는 이전 layer에서 이웃 인 'Michelle Obama'와 'Samuel L. Jackson'에 대한 정보를 이미 가지고있는 'Barack Obama', 'Ethan Horvath', 'Chevrolet', 'Washington D.C' 개체로부터 정보를 얻는다. 
+일반적으로 n layer 모델에서 들어오는 정보는 n-hop 이웃에 축적된다. 
+새로운 embedding을 학습하는 과정과 n-hop 이웃간 auxiliary edge를 소개하는 전체 과정이 그림 4에 나타나있다. 
+각 iteration마다 모든 GAT layer 이후와 첫번째 layer 이전에 개체 embedding을 정규화 한다.    
+
+### Training Objective
+&nbsp;&nbsp;이 모델의 score function은 TransE의 score function에서 아이디어를 가져왔다. 
+주어진 참 트리플 $$t^k_{ij}=(e_i, r_k,e_j)$$에서 $$e_i$$에서 $$r_k$$로 연결된 가장 가까운 이웃이 $$e_j$$가 되도록 embedding 한다. 
+특히 $$d_{t_{ij}}=\|\overrightarrow{h_i}+\overrightarrow{g_k}-\overrightarrow{h_j}\|_1$$ 다음과 같은 L1-norm dissimilarity를 최소화하도록 개체와 관계 embedding을 학습한다.  
+&nbsp;&nbsp;모델을 학습시키는데 hinge-loss를 사용하였다. 
+$$L(\Omega)=\sum_{t_{ij}\in S}\sum_{t_{ij}^\prime\in S^\prime} \text{max} \{ d_{t_{ij}}^\prime-d_{t_{ij}}+\gamma,0 \}$$ 
+여기서 $$\gamma>0$$은 margin hyper-parameter이고 $$S$$는 valid 트리플, $$S^\prime$$은 invalid 트리플이다.    
+
+### Decoder
+decoder로는 ConvKB 모델을 사용했다. 
+convolution layer에서는 각 차원에 걸쳐 트리플의 global embedding properties를 분석하고, 논문 모델의 transitional characteristic을 일반화한다. 
+ConvKB의 구조는 다음 그림과 같다. 
+![그림5](/assets/images/KBAT_figure5.png "그림5"){: .align-center}
+여러 feature map을 사용하는 score function은 다음과 같다. 
+$$f(t_{ij}^k)=\left( \|^\Omega_{m=1}\text{ReLU}([\overrightarrow{h_i},\overrightarrow{g_k},\overrightarrow{h_j}]\ast\omega^m) \right)\cdot\text{W}$$
+$$\omega^m$$는 $$m$$번째 convolution filter, $$\Omega$$는 filter의 숫자, $$\ast$$는 convolution 연산, $$\text{W}\in\Bbb R^{\Omegak\times1}$$은 최종 점수를 얻기 위한 선형 변환에 사용되는 행렬을 뜻한다. 
+모델은 soft-margin loss를 사용해 학습한다.  
+$$\mathcal{L}=\sum_{t_{ij}^k\in\left\{S\cup S^\prime\right\}}\text{log}(1+\text{exp}(l_{t_{ij}^k}\cdot f(t_{ij}^k)))+\frac{\lambda}{2}\|\text{W}\|^2_2 $$  
+$$l_{t_{ij}^k}=\begin{cases}1 & \text{for}\ t_{ij}^k\in S\\-1 & \text{for}\ t_{ij}^k\in S^\prime\end{cases}$$    
+
+## Experiments and Results
+### Datasets
+평가를 위해 WN18RR, FB15k-237, NELL-995, Unified Medical Language Systems(UMLS), Alyawarra Kinship dataset을 사용했다. 
+다음은 사용된 dataset의 정보이다.
+
+| Dataset | # Entities | # Relations | # Train | # Valid | # Test | # Total | # Mean in-degree | # Median in-degree |
+|:----|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| WN18RR | 40,943 | 11 | 86,835 | 3034 | 3134 | 93,0003 | 2.12 | 1 |
+| FB15k-237 | 14,541 | 237 | 272,115 | 17,535 | 20,466 | 310,116 | 18.71 | 8 |
+| NELL-995 | 75,492 | 200 | 149,678 | 543 | 3992 | 154,213 | 1.98 | 0 |
+| Kinship | 104 | 25 | 8544 | 1068 | 1074 | 10,686 | 82.15 | 82.5 |
+| UMLS | 135 | 46 | 5216 | 652 | 661 | 6529 | 38.63 | 20 |
+
+### Training Protocol
+head와 tail 개체를 교체하는 방식으로 두 개의 invalid triple을 만든다. 
+TransE에서 생성된 개체와 관계 embedding을 초기 embedding으로 사용했다. 
+학습 과정을 두단계로 나누었다. 먼저 GAT을 학습시켜 graph의 개체와 관계 정보를 인코딩한다. 
+그 후 decoder 모델을 학습시켜 relation prediction task를 수행한다. 
+Adam optimizer를 사용하였고, 개체와 관계 embedding의 final layer는 200으로 설정했다.    
+
+###  Evaluation Protocol
