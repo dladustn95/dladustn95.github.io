@@ -136,7 +136,7 @@ $$L(\Omega)=\sum_{t_{ij}\in S}\sum_{t_{ij}^\prime\in S^\prime} \text{max} \{ d_{
 여기서 $$\gamma>0$$은 margin hyper-parameter이고 $$S$$는 valid 트리플, $$S^\prime$$은 invalid 트리플이다.    
 
 ### Decoder
-decoder로는 ConvKB 모델을 사용했다. 
+&nbsp;&nbsp;decoder로는 ConvKB 모델을 사용했다. 
 convolution layer에서는 각 차원에 걸쳐 트리플의 global embedding properties를 분석하고, 논문 모델의 transitional characteristic을 일반화한다. 
 ConvKB의 구조는 다음 그림과 같다. 
 ![그림5](/assets/images/KBAT_figure5.png "그림5"){: .align-center}
@@ -149,7 +149,7 @@ $$l_{t_{ij}^k}=\begin{cases}1 & \text{for}\ t_{ij}^k\in S\\-1 & \text{for}\ t_{i
 
 ## Experiments and Results
 ### Datasets
-평가를 위해 WN18RR, FB15k-237, NELL-995, Unified Medical Language Systems(UMLS), Alyawarra Kinship dataset을 사용했다. 
+&nbsp;&nbsp;평가를 위해 WN18RR, FB15k-237, NELL-995, Unified Medical Language Systems(UMLS), Alyawarra Kinship dataset을 사용했다. 
 다음은 사용된 dataset의 정보이다.
 
 | Dataset | # Entities | # Relations | # Train | # Valid | # Test | # Total | # Mean in-degree | # Median in-degree |
@@ -161,10 +161,48 @@ $$l_{t_{ij}^k}=\begin{cases}1 & \text{for}\ t_{ij}^k\in S\\-1 & \text{for}\ t_{i
 | UMLS | 135 | 46 | 5216 | 652 | 661 | 6529 | 38.63 | 20 |
 
 ### Training Protocol
-head와 tail 개체를 교체하는 방식으로 두 개의 invalid triple을 만든다. 
+&nbsp;&nbsp;head와 tail 개체를 교체하는 방식으로 두 개의 invalid triple을 만든다. 
 TransE에서 생성된 개체와 관계 embedding을 초기 embedding으로 사용했다. 
 학습 과정을 두단계로 나누었다. 먼저 GAT을 학습시켜 graph의 개체와 관계 정보를 인코딩한다. 
 그 후 decoder 모델을 학습시켜 relation prediction task를 수행한다. 
 Adam optimizer를 사용하였고, 개체와 관계 embedding의 final layer는 200으로 설정했다.    
 
 ###  Evaluation Protocol
+&nbsp;&nbsp;Relation prediction task에서는 트리플 $$(e_i,r_k,e_j)$$에서 $$e_i$$ 또는 $$e_j$$가 빠졌을 때 이를 예측하는 것이다. 
+이전 연구와 마찬가지로 *filtered setting*을 사용했다. 
+평가에는 MRR, MR, Hits@N을 사용했다.    
+
+### Results and Analysis
+&nbsp;&nbsp;아래 그림에 실험 결과를 나타냈다. 
+![그림6](/assets/images/KBAT_figure6.png "그림6"){: .align-center}
+KBAT 모델이 뛰어난 성능 향상을 보였다는 것을 알 수 있다.  
+**Attention Values vs Epochs:** 특정 노드에서 epoch이 증가함에 따른 attention 분포를 연구했다. 
+아래 그림은 FB15k-237에서의 attention 분포이다. 
+![그림7](/assets/images/KBAT_figure7.png "그림7"){: .align-center}
+학습 초기에는 attention이 random으로 분포되어 있다. 
+학습이 진행되면서 모델이 이웃으로부터 더 많은 정보를 모아감에 따라 먼 이웃보다 가까운 이웃에 더 많은 가중치를 둔다. 
+모델이 수렴되면 node의 n-hop 이웃에서 multi-hop 및 클러스터링된 관계 정보를 수집하는 방법을 배운다.  
+**PageRank Analysis:** 논문에서는 개체들 사이의 복잡하고 숨겨진 multi-hop 관계가 sparse graph보다 dense graph에서 더 잘 포착된다고 주장한다. 
+이를 증명하기 위해 ConvE와 유사하게 PageRank와 MRR의 상관관계를 실험했다. 
+
+| Dataset | PageRank | Relative Increase |
+|:----|:---:|:---:|
+| NELL-995 | 1.32 | 0.025 |
+| WN18RR | 2.44 | -0.01 |
+| FB15k-237 | 6.87 | 0.237 |
+| UMLS | 740 | 0.247 |
+| Kinship | 961 | 0.388 |
+이 표에서 Relative Increase는 DistMult와 비교했을때 MRR의 증가량이다. 
+PageRank가 증가함에 따라 MRR도 증가했음을 알 수 있다. 
+NELL-995와 WN18RR을 비교하면 오류가 관찰되는데 이는 WN18RR의 sparse하고 hierarchical한 구조 때문이다. 
+이는 하향식 재귀 방식으로 정보를 수집하지 않는 모델의 특성 때문으로 보인다.    
+
+### Ablation Study
+&nbsp;&nbsp;모델에서 n-hop 정보를 제거한 *path generalization*(-PG) 또는 *relation Information*(-Relations)을 제외했을때 MR을 분석했다. 
+아래 그림은 NELL-995에서 모델들의 epoch에 따른 MR 변화를 나타낸다. 
+![그림8](/assets/images/KBAT_figure8.png "그림8"){: .align-center}
+Relation을 제거했을 때 큰 폭으로 성능이 떨어지는 것을 보아 relation embedding이 중요한 역할을 하는 것을 알 수 있다.    
+
+## Conclusion and Future Work
+&nbsp;&nbsp;본 논문에서는 주어진 개체에 대해 multi-hop 이웃의 개체와 관계 feature를 포착하는 graph attention mechanism을 제안했다. 
+향후 연구로는 모델이 hierarchical graph에서 더 잘 수행하도록 확장하고, graph attention 모델에서 개체간 higher-order relation을 더 잘 포착하도록 할 계획이다.
