@@ -8,7 +8,7 @@ categories:
 tags:
   - [NLP, RelationPrediction, LinkPrediction, KBAT]
 date: 2019-11-16T15:40:00+09:00
-last_modified_at: 2019-11-19T17:18:00+09:00
+last_modified_at: 2019-11-26T13:32:00+09:00
 ---
 
 # Learning Attention-based Embeddings for Relation Prediction in Knowledge Graphs
