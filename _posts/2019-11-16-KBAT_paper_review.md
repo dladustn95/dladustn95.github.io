@@ -111,6 +111,7 @@ $$\overrightarrow{h_i^\prime}=\|^M_{m=1}\sigma\left(\sum_{j\in\mathcal{N}_i}  \a
 | ![그림3](/assets/images/KBAT_figure3.png "그림3"){: .align-center} |
 |:---:|
 | 그림3: 점선은 concatenate 연산을 나타낸다. 초록원은 관계 embedding 벡터, 노란원은 개체 embedding 벡터를 나타낸다. |
+
 그림 3은 *graph attention layer*를 보여준다. 
 graph attention layer 1을 거친 후 관계 embedding에 선형 변환을 하여 추가해준다. 
 final attentional layer에서 multiple head에서 나온 embedding을 concatenate 하는 대신 평균을 적용해 최종 embedding vector를 얻는다.  
@@ -141,8 +142,8 @@ convolution layer에서는 각 차원에 걸쳐 트리플의 global embedding pr
 ConvKB의 구조는 다음 그림과 같다. 
 ![그림5](/assets/images/KBAT_figure5.png "그림5"){: .align-center}
 여러 feature map을 사용하는 score function은 다음과 같다. 
-$$f(t_{ij}^k)=\left( \|^\Omega_{m=1}\text{ReLU}([\overrightarrow{h_i},\overrightarrow{g_k},\overrightarrow{h_j}]\ast\omega^m) \right)\cdot\text{W}$$
-$$\omega^m$$는 $$m$$번째 convolution filter, $$\Omega$$는 filter의 숫자, $$\ast$$는 convolution 연산, $$\text{W}\in\Bbb R^{\Omegak\times1}$$은 최종 점수를 얻기 위한 선형 변환에 사용되는 행렬을 뜻한다. 
+$$f(t_{ij}^k)=\left( \|^\Omega_{m=1}\text{ReLU}([\overrightarrow{h_i},\overrightarrow{g_k},\overrightarrow{h_j}]\ast\omega^m) \right)\cdot\text{W}$$  
+$$\omega^m$$는 $$m$$번째 convolution filter, $$\Omega$$는 filter의 숫자, $$\ast$$는 convolution 연산, $$\text{W}\in\Bbb R^{\Omega k\times1}$$은 최종 점수를 얻기 위한 선형 변환에 사용되는 행렬을 뜻한다. 
 모델은 soft-margin loss를 사용해 학습한다.  
 $$\mathcal{L}=\sum_{t_{ij}^k\in\left\{S\cup S^\prime\right\}}\text{log}(1+\text{exp}(l_{t_{ij}^k}\cdot f(t_{ij}^k)))+\frac{\lambda}{2}\|\text{W}\|^2_2 $$  
 $$l_{t_{ij}^k}=\begin{cases}1 & \text{for}\ t_{ij}^k\in S\\-1 & \text{for}\ t_{ij}^k\in S^\prime\end{cases}$$    
@@ -192,6 +193,7 @@ KBAT 모델이 뛰어난 성능 향상을 보였다는 것을 알 수 있다.
 | FB15k-237 | 6.87 | 0.237 |
 | UMLS | 740 | 0.247 |
 | Kinship | 961 | 0.388 |
+
 이 표에서 Relative Increase는 DistMult와 비교했을때 MRR의 증가량이다. 
 PageRank가 증가함에 따라 MRR도 증가했음을 알 수 있다. 
 NELL-995와 WN18RR을 비교하면 오류가 관찰되는데 이는 WN18RR의 sparse하고 hierarchical한 구조 때문이다. 
