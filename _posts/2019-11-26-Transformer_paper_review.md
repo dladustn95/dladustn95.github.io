@@ -57,3 +57,20 @@ decoder의 self-attention sub-layer에서는 현재 위치보다 뒤에 있는 �
 position $$i$$에 대한 예측을 위해 $$i$$ 이전에 있는 정보들만 사용하도록 하는 것이다.    
 
 ### Attention
+&nbsp;&nbsp;Attention function은 query와 key-value 쌍을 output에 mapping 하는 것으로 설명할 수 있다. 
+여기서 query, key, value, output은 모두 벡터로 이뤄진다. 
+output은 weighted sum으로 계산되는데, weight는 해당 key와 query의 compatibility function으로 계산된다.  
+![그림2](/assets/images/Transformer_figure2.png "그림2"){: .align-center}  
+
+#### Scaled Dot-Product Attention
+&nbsp;&nbsp;Scaled Dot-Product Attention의 구조는 위 그림의 왼쪽에 나타나있다. 
+입력으로는 $$d_k$$ 차원의 query, key와 $$d_v$$ 차원의 value를 가진다. 
+query와 key의 dot product를 계산하고 $$\sqrt{d_k}$$로 나눈 값에 softmax 연산을 적용해 value에 대한 weight를 얻는다.  
+$$\text{Attention}(Q,K,V)=\text{softmax}(\frac{QK^T}{\sqrt{d_k}})V$$  
+가장 자주 쓰이는 attention function은 additive attention과 dot-product(multiplicative) attention이다. 
+dot-product attention은 scaling factor $$\frac{1}{\sqrt{d_k}}$$만 제외하면 논문의 알고리즘과 동일하다. 
+additive attention은 compatibility function을 단일 hidden layer의 feed-forward network를 사용해 계산한다. 
+두 개의 theoretical complexity는 비슷하지만, matrix multiplication에 대한 최적화된 코드가 많기 때문에 dot-product attention이 더 빠르고 공간 효율성이 좋다.  
+작은 값의 $$d_k$$에 대해서는 두 mechanism이 비슷하게 동작하지만 scaling이 없는 큰 $$d_k$$에 대해서는 additive attention이 더 좋은 성능을 보인다. 
+큰 값의 $$d_k$$에 대해서 dot product가 크게 증가하여 softmax 함수에서 gradient가 아주 작은 부분으로 가게 된다. 
+이를 방지하기 위해 $$\frac{1}{\sqrt{d_k}}$$로 dot product에 scale을 해준다. 

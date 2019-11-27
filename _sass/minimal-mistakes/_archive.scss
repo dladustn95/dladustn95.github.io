@@ -30,7 +30,9 @@
     position: static;
   }
 }
-
+.archive__item-title a {
+  text-decoration: none;
+}
 .archive__subtitle {
   margin: 1.414em 0 0;
   padding-bottom: 0.5em;
