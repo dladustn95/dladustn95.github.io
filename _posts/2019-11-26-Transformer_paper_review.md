@@ -8,7 +8,7 @@ categories:
 tags:
   - [NLP, Attention, Transformer]
 date: 2019-11-26T13:44:00+09:00
-last_modified_at: 2019-11-26T13:44:00+09:00
+last_modified_at: 2019-12-03T13:44:00+09:00
 ---
 
 # Attention is all you need
@@ -139,3 +139,20 @@ $$pos$$는 position, $$i$$는 차원을 의미한다.
 각 batch마다 약 25000개의 source token과 target token을 포함하는 문장 쌍을 가지도록 하였다.    
 
 ### 5.3 Optimizer
+&nbsp;&nbsp;논문에서는 $$\beta_1 = 0.9, \ \beta_2=0.98, \ \epsilon=10^{-9}$$를 parameter로 갖는 Adam optimizer를 사용했다. 
+또한 다음 식에 따라 변화하는 learning rate를 사용했다.  
+$$lrate=d_{\text{model}}^{-0.5}\cdot \text{min}(step\text{_}num^{-0.5},step\text{_}num\cdot warmup\text{_}steps^{-1.5})$$  
+이 식에서 learning rate는 첫번째 $$warmup\text{_}steps$$ 동안 $$step\text{_}num$$에 비례하여 선형적으로 증가하고, 그 이후로는 $$step\text{_}num$$의 역제곱근에 비례하여 감소한다. 
+이 논문에서는 $$warmup\text{_}steps=4000$$을 사용했다.    
+
+### 5.4 Regularization   
+**Residual Dropout**  
+sub-layer의 각 output이 input으로 사용되거나 normalized 되기 전에 dropout을 적용했다. 
+추가로 각 encoder, decoder stack에 embedding과 postional encoding을 더해 dropout을 적용했다. 
+기본적으로 $$P_{drop}=0.1$$을 사용했다.  
+**Label Smoothing**  
+학습이 진행되는 동안 $$\epsilon_{ls}=0.1$$ 값을 갖는 label smoothing을 적용했다.    
+
+## 7 Conclusion
+&nbsp;&nbsp;이 논문에서는 recurrent layer를 multi-head self-attenton으로 대체한 첫번째 sequence transduction model인 transformer를 제시했다. 
+translation tasks에서 transformer는 다른 recurrent나 convolution 모델보다 더 빠르게 학습하고, 더 좋은 성능을 보였다. 
