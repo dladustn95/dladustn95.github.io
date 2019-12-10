@@ -12,9 +12,6 @@ last_modified_at: 2019-12-03T13:44:00+09:00
 ---
 
 # Attention is all you need
-+
-+
-+
 
 ## 1 Introduction
 &nbsp;&nbsp;RNN, 특히 LSTM과 GRU는 sequence modeling과 language modeling이나 machine translation 같은 transduction problem에서 state-of-the-art로 자리 잡았다. 
