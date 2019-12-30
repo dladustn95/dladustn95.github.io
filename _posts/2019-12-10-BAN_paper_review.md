@@ -6,7 +6,7 @@ mathjax: true
 tags:
   - [Knowledge Distillation, Deep learning, BAN]
 date: 2019-12-10T18:00:00+09:00
-last_modified_at: 2019-12-10T13:44:00+09:00
+last_modified_at: 2019-12-30T13:44:00+09:00
 ---
 
 #Born-Again Neural Networks
