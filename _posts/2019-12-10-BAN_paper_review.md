@@ -6,7 +6,7 @@ mathjax: true
 tags:
   - [Knowledge Distillation, Deep learning, BAN]
 date: 2019-12-10T18:00:00+09:00
-last_modified_at: 2019-12-30T13:44:00+09:00
+last_modified_at: 2020-01-07T15:47:00+09:00
 ---
 
 #Born-Again Neural Networks
@@ -72,7 +72,7 @@ $$\sum_{s=1}^b\frac{\text{max}\ p_{.,s}}{\sum_{u=1}^b\text{max}\ p_{.,s}}(q_{\as
 $$\sum_{s=1}^b\sum_{i=1}^n\frac{\partial\mathcal{L}_{i,s}}{\partial z_{i,s}}=\sum_{s=1}^b(q_{\ast,s}-p_{\ast,s})+\sum_{s=1}^b\sum_{i=1}^{n-1}(q_{i,s}-p_{i,s})$$  
 위 식에서 $$\ast$$를 $$\text{max}$$로 대체하고, teacher dimension의 dark knowledge 부분을 permute하여 아래와 같이 표현한다.  
 $$\sum_{s=1}^b\sum_{i=1}^n\frac{\partial\mathcal{L}_{i,s}}{\partial z_{i,s}}=\sum_{s=1}^b(q_{\ast,s}-\text{max}p_{.,s})\ +\sum_{s=1}^b\sum_{i=1}^{n-1}q_{i,s}-\phi(p_{j,s})$$  
-위 식에서 $$phi(p_{j,s})$$는 teacher의 permuted output이다. 
+위 식에서 $$\phi(p_{j,s})$$는 teacher의 permuted output이다. 
 DKPP에서는 dark knowledge의 정확한 attribution을 각각의 non-argmax output dimension으로 뿌리고 original output 공분산 행렬의 쌍방향 유사성을 파괴한다.    
 
 ### BANs Stability to Depth and Width Variations
@@ -173,3 +173,35 @@ BAN-DenseNet-80-80의 3번째 세대(BAN-3)는 CIFAR-100에서 가장 좋은 sin
 가장 큰 ensemble 모델인 BAN-3-DenseNet-BC-80-120은 14.9%의 error를 기록하여 같은 setting에서 가장 좋은 성능을 보였다. 
 
 **Effect of non-argmax Logits**  
+그림1 왼쪽 table의 오른쪽 2개의 열을 보면 dark knowledge를 지우더라도 baseline에 비해 향상된 결과를 가져온다는 것을 알 수 있다. 
+CWTM은 가장 큰 DenseNet을 제외한 모든 model에서 teacher보다 약간 향상된 성능을 보였다. 
+DKPP에서는 argmax dimension을 제외한 모든 dimension을 permute하여 비슷하지만 systematic한 향상을 찾을 수 있었다. 
+이 결과는 KD가 단순히 부정확한 output에 대한 정보를 전달하는게 아니라는 것을 증명한다. 
+DKPP는 permutation procedure에서 변하지 않는 higher order moment가 여전히 generalization 개선에 기여한다는 것을 증명한다. 
+더해서 CWTM에서 잘못된 logit 정보를 완전히 제거하면 4개 중 3개의 모델이 개선된다. 
+teacher의 output 분포가 max에 집중되지 않게 training sample에 낮은 weight를 주는 방식으로 pre-trained model에 포함된 정보는 training set을 재조정하는데 쓰일 수 있다.    
+
+**DenseNet to modified DenseNet students**
+![그림3](/assets/images/BAN_figure3.png "그림3"){: .align-center}    
+위 그림에서는 DenseNet student가 특히 layer의 변화에 강하다는 것을 알 수 있다. 
+DenseNet-90-60 teacher layer의 반만 layer로 갖는 가장 얕은 모델 DenseNet-7-1-2는 16.95%의 error로 teacher보다 좋은 성능을 보였다. 
+깊은 variation일수록 기존의 student보다 비슷하거나 더 나은 성능을 보였다. 
+가장 좋은 성능을 보인 student는 DenseNet-90-60 teacher보다 2배의 layer를 갖는다. 
+가장 큰 instabilities와 parameter 절약은 network의 compression rate를 수정하여 얻고, 각 hidden layer의 dimensionality를 간접적으로 감소시킨다. 
+compression을 반으로 줄인 DenseNet-14-0.5-1는 가장 낮은 성능인 19.83%의 error를 갖는다. 
+감소량이 작을수록 정확도는 줄고 parameter 절약량이 커지지만 DenseNet-106-33과 같은 BAN으로 재교육된 더 작은 network를 직접 선택하는 것은 parameter 효율을 높인다.    
+
+**DenseNet Teacher to ResNet Student**
+![그림4](/assets/images/BAN_figure4.png "그림4"){: .align-center}    
+각 단계에서 DenseNet teacher의 output 형태와 일치하는 Wide-ResNet과 Pre-ResNet student가 그들의 teacher, baseline, classical ResNets을 능가하는 경향이 있다. 
+model의 깊이를 조정하면 memory 소비와 sequential operation 수 사이에 trade-off가 이루어지는 것과 비슷하게 밀도와 residual block을 변환하는 것은 concatenation과 addition중 하나를 선택할 수 있게 한다.    
+
+**ResNet Teacher to DenseNet Students**  
+ResNet student로 DenseNet-90-60 student를 훈련시키는 실험을 통해 student가 그들의 teacher를 능가하는 추세를 확인한다. 
+그림 2의 Table 3    
+
+## Discussion
+Marvin Minsky의 'Society of Mind'에서는 인간의 발전이 *sequence of teaching selves* 때문이라고 분석했다. 
+Minsky는 어린나이에 지능이 확 발달하는 것은 나이든 자신의 지도하에 새로운 "student" model이 훈련된 결과 때문이라고 했다. 
+자아는 여러 세대의 내부 model의 ensemble에 의해 구성된다고 결론지었다. 
+우리의 결과는 artificial neural network에서 이러한 전송이 성공적인 경우를 보여준다. 
