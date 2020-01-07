@@ -6,7 +6,7 @@ mathjax: true
 categories:
   - NLP
 tags:
-  - [NLP, RelationPrediction, LinkPrediction, KBAT]
+  - [NLP, RelationPrediction, LinkPrediction, DeepLearning, KBAT]
 date: 2019-11-16T15:40:00+09:00
 last_modified_at: 2019-11-26T13:32:00+09:00
 ---

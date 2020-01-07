@@ -6,7 +6,7 @@ mathjax: true
 categories:
   - NLP
 tags:
-  - [NLP, RelationPrediction, LinkPrediction, ConvE]
+  - [NLP, RelationPrediction, LinkPrediction, DeepLearning, ConvE]
 date: 2019-11-11T11:11:00+09:00
 last_modified_at: 2019-11-14T14:08:00+09:00
 ---

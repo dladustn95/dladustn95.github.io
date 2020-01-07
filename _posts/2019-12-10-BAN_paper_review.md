@@ -4,7 +4,7 @@ excerpt: "Born-Again Neural Networks 논문 리뷰"
 
 mathjax: true
 tags:
-  - [Knowledge Distillation, Deep learning, BAN]
+  - [KnowledgeDistillation, DeepLearning, BAN]
 date: 2019-12-10T18:00:00+09:00
 last_modified_at: 2020-01-07T15:47:00+09:00
 ---

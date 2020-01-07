@@ -6,7 +6,7 @@ mathjax: true
 categories:
   - NLP
 tags:
-  - [NLP, Attention, Transformer]
+  - [NLP, Attention, DeepLearning, Transformer]
 date: 2019-11-26T13:44:00+09:00
 last_modified_at: 2019-12-03T13:44:00+09:00
 ---
