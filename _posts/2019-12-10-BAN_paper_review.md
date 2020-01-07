@@ -65,13 +65,13 @@ Knowledge distillation은 정확한 예측에 대한 teacher의 confidence에 �
 첫번째 처리는 Confidence Weighted by Teacher Max (CWTM)이다. 
 student loss function 안에 있는 example에 teacher model의 confidence에 의해 weight를 준다. 
 BAN model을 다음 식의 근사를 이용해 훈련시킨다.  
-$$\sum_{s=1}^b\frac{w_s}{\sum_{u=1}^bw_u}(q_{\ast,s}-y_{\ast,s})=\sum_{s=1}^b\frac{p_{\ast,s}}{\sum_{u=1}^bp_{\ast,u}}(q_{\ast,s}-y_{\ast,s})$$
-위 식에서 정답 $$p_{\ast,s}$$를 teacher $$maxp_{.,s}$$의 max output으로 대체한다. 
-$$\sum_{s=1}^b\frac{\text{max}\ p_{.,s}}{\sum_{u=1}^b\text{max}\ p_{.,s}}(q_{\ast,s}-y_{\ast,s})$$
-두번째로 dark knowledge with Permuted Predictions (DKPP)는 teacher의 예측 분포에 대한 non-argmax output을 permute한다.
-$$\sum_{s=1}^b\sum_{i=1}^n\frac{\partial\mathcal{L}_{i,s}}{\partial z_{i,s}}=\sum_{s=1}^b(q_{\ast,s}-p_{\ast,s})+\sum_{s=1}^b\sum_{i=1}^{n-1}(q_{i,s}-p_{i,s})$$
+$$\sum_{s=1}^b\frac{w_s}{\sum_{u=1}^bw_u}(q_{\ast,s}-y_{\ast,s})=\sum_{s=1}^b\frac{p_{\ast,s}}{\sum_{u=1}^bp_{\ast,u}}(q_{\ast,s}-y_{\ast,s})$$  
+위 식에서 정답 $$p_{\ast,s}$$를 teacher $$\text{max}p_{.,s}$$의 max output으로 대체한다. 
+$$\sum_{s=1}^b\frac{\text{max}\ p_{.,s}}{\sum_{u=1}^b\text{max}\ p_{.,s}}(q_{\ast,s}-y_{\ast,s})$$  
+두번째로 dark knowledge with Permuted Predictions (DKPP)는 teacher의 예측 분포에 대한 non-argmax output을 permute한다.  
+$$\sum_{s=1}^b\sum_{i=1}^n\frac{\partial\mathcal{L}_{i,s}}{\partial z_{i,s}}=\sum_{s=1}^b(q_{\ast,s}-p_{\ast,s})+\sum_{s=1}^b\sum_{i=1}^{n-1}(q_{i,s}-p_{i,s})$$  
 위 식에서 $$\ast$$를 $$\text{max}$$로 대체하고, teacher dimension의 dark knowledge 부분을 permute하여 아래와 같이 표현한다.  
-$$\sum_{s=1}^b\sum_{i=1}^n\frac{\partial\mathcal{L}_{i,s}}{\partial z_{i,s}}=\sum_{s=1}^b(q_{\ast,s}-\text{max}p_{.,s}) \\+\sum_{s=1}^b\sum_{i=1}^{n-1}q_{i,s}-\phi(p_{j,s})$$
+$$\sum_{s=1}^b\sum_{i=1}^n\frac{\partial\mathcal{L}_{i,s}}{\partial z_{i,s}}=\sum_{s=1}^b(q_{\ast,s}-\text{max}p_{.,s})\ +\sum_{s=1}^b\sum_{i=1}^{n-1}q_{i,s}-\phi(p_{j,s})$$  
 위 식에서 $$phi(p_{j,s})$$는 teacher의 permuted output이다. 
 DKPP에서는 dark knowledge의 정확한 attribution을 각각의 non-argmax output dimension으로 뿌리고 original output 공분산 행렬의 쌍방향 유사성을 파괴한다.    
 
@@ -136,3 +136,40 @@ CNN-LSTM은 40epoch, mini-batch 크기가 20인 SGD로 훈련된다.
 초기 learning rate는 2에서 시작하여 적어도 0.5 epoch 이후에 validation perplexity가 감소하지 않으면 0.5배 된다.    
 
 ## Results
+BAN student model이 teacher model보다 더 향상되었다.    
+
+### 5.1. CIFAR-10
+아래 표에서 알 수 있듯 CIFAR-10의 test error는 동일한 teacher에게 훈련받은 Wide-ResNet과 DenseNet student에서 보두 낮거나 같아졌다. 
+BAN-DenseNet이 다른 복잡성의 architecture 간 격차를 빠르게 줄여 parameter와 error rate에 대한 implicit gain을 얻는 방법에 주목할 필요가 있다.  
+
+| Network | Parameters | Teacher | BAN |
+|:----|:---:|:---:|:---:|
+| Wide-ResNet-28-1 | 0.38 M | 6.69 | **6.64** |
+| Wide-ResNet-28-2 | 1.48 M | 5.06 | **4.86** |
+| Wide-ResNet-28-5 | 9.16 M | 4.13 | **4.03** |
+| Wide-ResNet-28-10 | 36 M | **3.77** | 3.86 |
+| DenseNet-112-33 | 6.3 M | 3.84 | **3.61** |
+| DenseNet-90-60 | 16.1 M | 3.81 | **3.5** |
+| DenseNet-80-80 | 22.4 M | **3.48** | 3.49 |
+| DenseNet-80-120 | 50.4 M | **3.37** | 3.54 |
+
+### 5.2. CIFAR-100
+CIFAR-100에서는 모든 BAN-DenseNet model이 향상되었다. 
+따라서 born-again 현상을 이해하고 조사하기위해 이 dataset에서 대부분의 실험을 진행하였다.    
+
+**BAN-DenseNet and BAN-ResNet**  
+![그림1](/assets/images/BAN_figure1.png "그림1"){: .align-center}  
+위 그림에서 label과 teacher output(BAN+L)을 사용하거나 후자(BAN)만을 사용하여 test error rate를 조사했다. 
+label supervision을 완전히 제거하는 개선은 양식 전반에 걸쳐 체계적이며
+가장 작은 student인 BAN-DenseNet-112-33이 6.5M개의 parameter만으로 16.95%의 error를 달성한 반면  DenseNet-80-120 teacher는 8배 많은 parameter를 사용해 16.87%의 error를 기록했다.  
+아래 그림에서는 하나를 제외한 모든 Wide-ResNnet student가 그들의 teacher보다 향상되었다.  
+![그림2](/assets/images/BAN_figure2.png "그림2"){: .align-center}    
+
+**Sequence of Teaching Selves**  
+BAN을 여러 세대 학습 시키는 것은 몇세대 후 포화상태에 도달하여 일관성을 잃게 하지만 성능이 향상된다. 
+BAN-DenseNet-80-80의 3번째 세대(BAN-3)는 CIFAR-100에서 가장 좋은 single model이다(그림1 참조).    
+
+**BAN-Ensemble**  
+가장 큰 ensemble 모델인 BAN-3-DenseNet-BC-80-120은 14.9%의 error를 기록하여 같은 setting에서 가장 좋은 성능을 보였다. 
+
+**Effect of non-argmax Logits**  
