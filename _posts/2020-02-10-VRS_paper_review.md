@@ -4,7 +4,7 @@ excerpt: "Select and Attend: Towards Controllable Content Selection in Text Gene
 
 mathjax: true
 tags:
-  - [DeepLearning, TextGeneration NLP]
+  - [DeepLearning, TextGeneration, NLP]
 date: 2020-02-10T18:00:00+09:00
 last_modified_at: 2020-02-10T18:00:00+09:00
 ---

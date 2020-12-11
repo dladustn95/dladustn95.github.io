@@ -4,7 +4,7 @@ excerpt: "Generating Informative Responses with Controlled Sentence Function 논
 
 mathjax: true
 tags:
-  - [DeepLearning, DialogueGeneration NLP]
+  - [DeepLearning, DialogueGeneration, NLP]
 date: 2020-02-10T18:00:00+09:00
 last_modified_at: 2020-02-10T18:00:00+09:00
 ---
