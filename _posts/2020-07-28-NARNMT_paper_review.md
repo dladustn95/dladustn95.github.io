@@ -3,10 +3,12 @@ title:  "Non-Autoregressive Neural Machine Translation 논문 리뷰"
 excerpt: "Non-Autoregressive Neural Machine Translation 논문 리뷰"
 
 mathjax: true
+categories:
+  - NLP
 tags:
   - [DeepLearning, MachineTranslation, Transformer, NLP]
-date: 2020-06-12T18:00:00+09:00
-last_modified_at: 2020-06-12T18:00:00+09:00
+date: 2020-07-28T18:00:00+09:00
+last_modified_at: 2020-07-28T18:00:00+09:00
 ---
 
 # Non-Autoregressive Neural Machine Translation
@@ -27,22 +29,22 @@ $$p_{\mathcal{AR}}(Y|X;\theta)=\prod_{t=1}^{T+1}p(y_t|y_{0:t-1},x_{1:T'};\theta)
 
 스페셜 토큰 \<bos>, \<eos>가 문장의 시작과 끝을 알리기 위해 사용된다. 
 이런 확률은 neural net으로 표현됨.  
-####Maximum Likelihood training
+**Maximum Likelihood training**  
 각 decoding step마다 Maximum Likelihood를 적용
 $$\mathcal{L}_{ML} = \log p_{\mathcal{AR}}(Y|X;\theta)=\sum_{t=1}^{T+1}p(y_t|y_{0:t-1},x_{1:T'};\theta)$$  
 
-####Autoregressive NMT without RNNs
+**Autoregressive NMT without RNNs**  
 훈련 과정에서는 전체 target을 알고 있기 대문에 조건부확률을 계산하기 위해 이전 output word에 의존할 필요는 없다. 
 그래서 훈련 중에는 병렬 처리 가능.
 
 ### 2.2 Non-Autoregressive Decoding
-####Pros and cons of autoregressive decoding
+**Pros and cons of autoregressive decoding**  
 기존 모델에서 사용하는 방식은 인간이 언어를  생성하는 방식과 유사하다. 
 큰 corpora에서 학습시키기 쉽고 beam search로 적절한 output을 찾을 수 있다. 
 그러나 순차적으로 실행되어야 해서 오래 걸린다. 
 Beamsearch는 beam size와 관련한 문제가 있고 beam간의 의존성이 존재해 병렬화가 제한된다.  
 
-####Towards non-autoregressive decoding
+**Towards non-autoregressive decoding**  
 ![그림1](/assets/images/NARNMT_figure1.png "그림1"){: .align-center}  
 나이브한 방법은 모델에 존재하는 AR connection을 제거하는 것이다. 
 Target sequence 길이 T는 분리된 조건부확률로 표현할 수 있다고 가정하자. 
@@ -67,7 +69,7 @@ Non-Autoregressive Transformer 제안.
 각 encoder, decoder stack은 트랜스포머와 유사. Encoder는 트랜스포머와 똑같다.
 
 ### 3.2 Decoder Stack
-####Decoder Inputs
+**Decoder Inputs**  
 decoding하기 전에 출력 문장의 sentence 길이를 알아야 한다. 
 중요한건 time-shifted target output이나 prevoius predicted output을 decoder layer의 입력으로 사용 못한다는 점이다. 
 decoder layer에 입력을 생략하거나 position embedding만 사용하면 성능이 좋지 않다. 
@@ -77,12 +79,12 @@ Source와 target의 길이가 다르므로 두가지 방법을 사용한다.
 - Copy source inputs using fertilities : input을 0~여러 번 복사하는 것. 각 input이 복사되는 횟수는 그 단어의 “fertility”라고 할 수 있다. 
  Result 길이는 fertility의 합으로 정해진다. 
 
-####Non-causal self-attention
+**Non-causal self-attention**  
 decoding step에서 이후 단계 정보에 접근하는 것을 막을 필요가 없다. 
 대신 각 쿼리 위치에서 자기 자신을 attention 하는 것을 mask한다. 
 Unmasked self-attention에 비해 디코더 성능을 향상 시킬 수 있다. 
 
-####Positional attention
+**Positional attention**  
 decoder layer에 positional attention module을 추가함.  
 $$\text{Attention}(Q,K,V)=\text{softmax}(\frac{QK^T}{\sqrt{d_{model}}})\cdot V$$   
 Positional encoding은 q,k로 decoder state는 v로 사용. 
@@ -105,11 +107,11 @@ Fertility를 latent variable로 사용한다는 것은 translation의 길이를 
 inference 과정에서 모든 latent fertility sequence에 대해 marginalizing해서 가장 높은 조건부 확률을 가지는 translation을 식별한다. 
 Fertility 시퀀스가 주어지면 각 output 위치에 대한 local probability만 독립적으로 최대화하면 최적 translation을 찾을 수 있다. 
 전체 공간을 탐색하는 것은 한계가 있기 때문에 3가지 방법을 제안한다. 
-####Argmax decoding
+**Argmax decoding**  
 각 입력 단어에 대한 가장 높은 확률의 fertility 선택
-####Average decoding
+**Average decoding**  
 softmax 확률의 평균으로 추정.
-####Noisy parallel decoding (NPD)
+**Noisy parallel decoding (NPD)**  
 fertility space에서 noise를 주입한 여러 샘플을 만들고 가장 높은 점수를 갖는 sample 고른다.
 AR teacher로 최상의 translation을 구별한다. 
 NPD는 stochastic한 검색 방법이고 sample size만큼 계산량을 증가시킨다. 

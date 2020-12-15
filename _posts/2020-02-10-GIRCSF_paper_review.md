@@ -3,6 +3,8 @@ title:  "Generating Informative Responses with Controlled Sentence Function 논�
 excerpt: "Generating Informative Responses with Controlled Sentence Function 논문 리뷰"
 
 mathjax: true
+categories:
+  - NLP
 tags:
   - [DeepLearning, DialogueGeneration, NLP]
 date: 2020-02-10T18:00:00+09:00

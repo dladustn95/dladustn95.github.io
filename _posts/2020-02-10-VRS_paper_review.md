@@ -3,6 +3,8 @@ title:  "Select and Attend: Towards Controllable Content Selection in Text Gener
 excerpt: "Select and Attend: Towards Controllable Content Selection in Text Generation 논문 리뷰"
 
 mathjax: true
+categories:
+  - NLP
 tags:
   - [DeepLearning, TextGeneration, NLP]
 date: 2020-02-10T18:00:00+09:00
