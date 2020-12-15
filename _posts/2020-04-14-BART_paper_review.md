@@ -67,6 +67,7 @@ BART는 autoregressive 디코더를 갖고 있으므로 바로 fine-tuning이 �
 인코더에 input이 주어지면 디코더에서 output을 autoregressive하게 만든다.
 
 ### 3.4 Machine Translation
+![그림4](/assets/images/bart_figure4.png "그림4"){: .align-center}  
 전체 BART 모델을 기계 번역을 위한 pre-trained 디코더로 사용하고 새로운 인코더를 추가해서 인코더-디코더를 fine-tuning 한다. 
 새로운 인코더는 외국어를 BART가 학습한 언어로(영어로 학습했으면 영어로) denoising 할 수 있는 입력으로 mapping 한다.
 새로운 인코더는 BART와 다른 vocabulary를 사용할 수 있다.
@@ -84,14 +85,14 @@ BART는 autoregressive 디코더를 갖고 있으므로 바로 fine-tuning이 �
 학습을 오래하거나(RoBERTa), 레이어의 파라미터를 공유하는 방법(ALBERT), 단어를 masking 하는 대신 공간을 masking 하는 방법(SpanBERT)이 더 향상된 성능을 보였다. 
 BERT는 예측이 auto-regressive 하지 않아서 생성 task에는 약하다.
 
-![그림3](/assets/images/bart_figure4.png "그림4"){: .align-center}  
+![그림5](/assets/images/bart_figure5.png "그림5"){: .align-center}  
 - UniLM은 unidirectional LM, Bidirect LM, sequence LM을 앙상블한 모델이다. 
 각 LM task 사이의 파라미터와 모델 구조를 통일함으로써, 여러 LM을 만들어야 했던 필요성을 완화합니다.
 BART처럼 생성과 분류 task 모두 가능하다. 
 BART와 차이점은 UniLM의 prediction은 conditionally independent하다는 점이다. 
 BART는 항상 완전한 입력이 디코더에 주어져서 pre-training과 생성의 차이가 적다. 
 
-![그림3](/assets/images/bart_figure5.png "그림5"){: .align-center} 
+![그림6](/assets/images/bart_figure6.png "그림6"){: .align-center} 
 - MASS는 BART와 가장 유사한 모델이다. 
 연속된 span이 masking된 문장을 인코더 입력으로 주고, 디코더에서 masking 되었던 토큰들을 예측한다.
 
@@ -128,7 +129,7 @@ eos 토큰의 representation이 문장의 관계를 예측하는데 사용된다
 - CNN/DM: 뉴스 요약 task.  
 
 ### 5.3 Results
-![그림3](/assets/images/bart_figure6.png "그림6"){: .align-center}  
+![그림7](/assets/images/bart_figure7.png "그림7"){: .align-center}  
 Pre-trained 모델의 성능은 task가 큰 영향을 미친다. 
 예를 들어 language model의 경우 generation task인 ELI5에서는 가장 좋았으나 classification task인 SQuAD에서는 가장 나빴다.  
 
@@ -161,34 +162,34 @@ Document는 GPT2와 같은 byte-pair encoding을 사용해 토크나이징했다
 RoBERTa와 같은 데이터를 사용했다.  
 
 ### 6.2 Discriminative Tasks
-![그림3](/assets/images/bart_figure7.png "그림7"){: .align-center}  
+![그림8](/assets/images/bart_figure8.png "그림8"){: .align-center}  
 SQuAD, GLUE에 대해 BART 성능을 측정했다. 
 같은 데이터를 사용해 다른 방법으로 학습한 RoBERTa와 비교해보면 큰 차이가 없음을 보였다.
 BART는 generation task에서 성능 향상을 이루면서 classification task에서도 경쟁력을 유지했다.  
 
 ### 6.3 Generation Tasks
-![그림3](/assets/images/bart_figure8.png "그림8"){: .align-center}  
+![그림9](/assets/images/bart_figure9.png "그림9"){: .align-center}  
 CNN/DM은 주로 앞의 3문장이 정답으로 사용되는 extractive한 데이터이다. 
 XSum은 abstractive한 데이터이다. 
 두 데이터에서 BART가 가장 좋은 성능을 보였다. 특히 Xsum에서 크게 향상되었고, 정답의 질도 향상되었다.  
 
-![그림3](/assets/images/bart_figure9.png "그림9"){: .align-center}  
+![그림10](/assets/images/bart_figure10.png "그림10"){: .align-center}  
 Persona를 반영하는 데이터셋인 ConvAI2로 실험했다.
 BART가 다른 모델보다 더 잘했다.  
 
-![그림3](/assets/images/bart_figure10.png "그림10"){: .align-center}  
+![그림11](/assets/images/bart_figure11.png "그림11"){: .align-center}  
 Abstractive QA task에서는 ELI5 데이터셋을 사용했다.
 BART가 더 잘하긴 했지만 정답과 질문의 연관성이 약하기 때문에 더 연구해볼 필요가 있다.
 
 ### 6.4 Translation
-![그림3](/assets/images/bart_figure11.png "그림11"){: .align-center}  
+![그림12](/assets/images/bart_figure12.png "그림12"){: .align-center}  
 WMT16 RomanianEnglish 데이터셋을 사용했다.
 앞서 언급한 방법으로 fine-tuning을 진행했다.
 back-translation 데이터가 없으면 덜 효과적이었고, overfitting 되는 경향이 있었다.
 따라서 추가적인 연구가 필요하다. 
 
 ## 7. Qualitative Analysis
-![그림3](/assets/images/bart_figure12.png "그림12"){: .align-center}  
+![그림13](/assets/images/bart_figure13.png "그림13"){: .align-center}  
 BART는 특히 summarization task에서 성능이 많이 향상됐다.
 위의 예시는 BART로 생성한 요약의 예이다. 
 Background knowledge를 사용해 요약을 더 잘하는데 특히 source에도 없는 지식을 사용할 수 있다.
