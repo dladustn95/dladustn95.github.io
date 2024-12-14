@@ -22,7 +22,9 @@ NLG 시스템의 성능을 평가하는데 있어 사람이 쓴 텍스트는 성
 또한 자세한 지침을 주거나, 주석이 달린 예제, pair example을 주는 것으로 평가자를 훈련시키고 평가자의 정확성을 개선할 수 있는지 실험했습니다.
 
 ## 2. Current human evaluation
+
 ![그림1](/assets/images/AHING_figure1.png "그림1"){: .align-center}  
+
 Task의 인터페이스 환경
 ### 2.1 The Task
 먼저 훈련되지 않은 평가자가 사람과 기계가 생성한 문장을 구별할 수 있는지 실험했습니다. 
